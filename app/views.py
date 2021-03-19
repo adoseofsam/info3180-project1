@@ -18,11 +18,28 @@ def home():
     """Render website's home page."""
     return render_template('home.html')
 
-
 @app.route('/about/')
 def about():
     """Render the website's about page."""
-    return render_template('about.html', name="Mary Jane")
+    return render_template('about.html', name="Samantha James")
+
+
+@app.route('/property')
+def property():
+    """Render the website's property page."""
+    return render_template('property.html')
+
+@app.route('/properties')
+def properties():
+    """Render the website's properties page."""
+    return render_template('properties.html')
+
+@app.route('/propert/<propertyid>')
+def about():
+    """Render the website's properties page."""
+    return render_template('getproperties.html')
+
+
 
 
 ###
