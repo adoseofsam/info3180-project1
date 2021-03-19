@@ -4,9 +4,14 @@ Jinja2 Documentation:    http://jinja.pocoo.org/2/documentation/
 Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
 This file creates your application.
 """
+import os
+from app import app,db
+from flask import render_template, request, redirect, url_for,flash
+from app.forms import PropertyForm
+import psycopg2 
+from app.models import Property
+from flask_login import login_user, logout_user, current_user, login_required
 
-from app import app
-from flask import render_template, request, redirect, url_for
 
 
 ###
@@ -35,7 +40,7 @@ def properties():
     return render_template('properties.html')
 
 @app.route('/propert/<propertyid>')
-def about():
+def getproperties(propertyid):
     """Render the website's properties page."""
     return render_template('getproperties.html')
 
