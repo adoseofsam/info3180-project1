@@ -8,9 +8,8 @@ import os
 from app import app,db
 from flask import render_template, request, redirect, url_for,flash
 from app.forms import PropertyForm
-import psycopg2 
 from app.models import Property
-from flask_login import login_user, logout_user, current_user, login_required
+from werkzeug.utils import secure_filename
 
 
 
@@ -29,20 +28,48 @@ def about():
     return render_template('about.html', name="Samantha James")
 
 
-@app.route('/property')
+@app.route('/property', methods = ['GET', 'POST'])
 def property():
     """Render the website's property page."""
-    return render_template('property.html')
+    pform = PropertyForm()
+    if request.method == 'POST':
+        if pform.validate_on_submit():
+            ptitle = pform.ptitle.data
+            pdescription = pform.pdescription.data
+            prooms = pform.prooms.data
+            pbathrooms=pform.pbathrooms.data
+            pprice = pform.pprice.data
+            pproptype = pform.pprice.data
+            plocation = pform.plocation.data
+            photo = pform.photo.data
+            filename = secure_filename(photo.filename)
+            photo.save(os.path.join(
+                app.config['UPLOAD_FOLDER'], filename
+            ))
+            
+            property=Property(title=ptitle,description=pdescription,prooms=rooms,pbathrooms=bathrooms,pprice=price,pproptype=proptype,photo="uploads/"+filename)
+            db.session.add(property)
+            db.session.commit()
+            
+            flash('New Property has been added!','success')
+            return redirect(url_for('properties'))
+        else:
+            flash_errors(pform)
+            
+    return render_template('property.html', form =pform)
 
-@app.route('/properties')
+@app.route('/properties', methods=['GET'])
 def properties():
     """Render the website's properties page."""
-    return render_template('properties.html')
+    properties=[]
+    properties = Property.query.all()
+    return render_template('properties.html', properties=properties)
 
-@app.route('/propert/<propertyid>')
+@app.route('/property/<propertyid>')
 def getproperties(propertyid):
     """Render the website's properties page."""
-    return render_template('getproperties.html')
+    property = Property.query.get(propertyid)
+    return render_template('getproperties.html', property=property)
 
 
 
