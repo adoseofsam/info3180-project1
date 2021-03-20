@@ -34,20 +34,20 @@ def property():
     pform = PropertyForm()
     if request.method == 'POST':
         if pform.validate_on_submit():
-            ptitle = pform.ptitle.data
-            pdescription = pform.pdescription.data
-            prooms = pform.prooms.data
-            pbathrooms=pform.pbathrooms.data
-            pprice = pform.pprice.data
-            pproptype = pform.pprice.data
-            plocation = pform.plocation.data
+            title = pform.title.data
+            description = pform.description.data
+            rooms = pform.rooms.data
+            bathrooms=pform.bathrooms.data
+            price = pform.price.data
+            proptype = pform.price.data
+            location = pform.location.data
             photo = pform.photo.data
             filename = secure_filename(photo.filename)
             photo.save(os.path.join(
                 app.config['UPLOAD_FOLDER'], filename
             ))
             
-            property=Property(title=ptitle,description=pdescription,prooms=rooms,pbathrooms=bathrooms,pprice=price,pproptype=proptype,photo="uploads/"+filename)
+            property=Property(title=ptitle,description=description,rooms=rooms,bathrooms=bathrooms,price=price,proptype=proptype,location=location,photo="uploads/"+filename)
             db.session.add(property)
             db.session.commit()
             
