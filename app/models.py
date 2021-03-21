@@ -5,16 +5,16 @@ class Property(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(80))
     description = db.Column(db.String(255))
-    rooms = db.Column(db.Integer)
-    bathrooms= db.Column(db.Integer)
-    price = db.Column(db.Integer)
+    rooms = db.Column(db.String(3))
+    bathrooms= db.Column(db.String(3))
+    price = db.Column(db.String(100))
     proptype = db.Column(db.String(80))
-    location = db.Column(db.String(80))
-    property_pic = db.Column(db.String(80))
+    location = db.Column(db.String(255))
+    photo = db.Column(db.String(255))
 
 
 
-    def __init__(self,title,description,rooms,bathrooms,price,proptype,location,property_pic):
+    def __init__(self,title,description,rooms,bathrooms,price,proptype,location,photo):
         self.title = title
         self.description = description
         self.rooms = rooms
@@ -22,7 +22,7 @@ class Property(db.Model):
         self.price = price
         self.proptype = proptype
         self.location = location
-        self.property_pic = property_pic
+        self.photo = photo
 #
 #    def is_authenticated(self):
 #        return True
@@ -39,8 +39,8 @@ class Property(db.Model):
 #        except NameError:
 #            return str(self.id)  # python 3 support
 #
-#    def __repr__(self):
-#        return '<User %r>' % (self.id)
+    def __repr__(self):
+       return '<Property %r, $%r>' % (self.title, self.price)
         
   
     

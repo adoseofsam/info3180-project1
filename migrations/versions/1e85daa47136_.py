@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: c4bc6ba25d95
+Revision ID: 1e85daa47136
 Revises: 
-Create Date: 2021-03-20 00:01:28.617928
+Create Date: 2021-03-20 23:32:51.686777
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'c4bc6ba25d95'
+revision = '1e85daa47136'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -22,12 +22,12 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(length=80), nullable=True),
     sa.Column('description', sa.String(length=255), nullable=True),
-    sa.Column('rooms', sa.Integer(), nullable=True),
-    sa.Column('bathrooms', sa.Integer(), nullable=True),
-    sa.Column('price', sa.Integer(), nullable=True),
+    sa.Column('rooms', sa.String(length=3), nullable=True),
+    sa.Column('bathrooms', sa.String(length=3), nullable=True),
+    sa.Column('price', sa.String(length=100), nullable=True),
     sa.Column('proptype', sa.String(length=80), nullable=True),
-    sa.Column('location', sa.String(length=80), nullable=True),
-    sa.Column('property_pic', sa.String(length=80), nullable=True),
+    sa.Column('location', sa.String(length=255), nullable=True),
+    sa.Column('photo', sa.String(length=255), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###

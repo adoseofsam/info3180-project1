@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% include 'flash_messages.html' %}
+    {% if properties %}
+    
+        <div class ="column">
+            {% for property in properties %}
+            
+           <div class= "col-12 col-sm-6 col-xl-3">
+            <div class="card">
+                <img class="card-Proppic"> src="{{ url_for('getproperties' ,  filename=property.photo) }}" alt="Property Photo">
+                <div class="card-body">
+                <h5 class="card-title">{{ property.title }}</h5>
+                <p class = "card-text">
+                    <span></span>
+                    {{ property.location }}
+                </p>
+                
+                <p class= "card-text">
+                    {{ property.price }}
+                </p>
+                
+                <a href="{{ url_for('property', pid=property.id) }}" class="btn btn-primary">View Property</a>
+             </div>
+           </div>
+           {% endfor %}
+         </div>
+       {% else %}
+            <h2>No property found</h2>
+       {% endif %}
+     {% endblock %}
+                
+
+
+
+            
+

@@ -31,46 +31,57 @@ def about():
 @app.route('/property', methods = ['GET', 'POST'])
 def property():
     """Render the website's property page."""
-    pform = PropertyForm()
-    if request.method == 'POST':
-        if pform.validate_on_submit():
-            title = pform.title.data
-            description = pform.description.data
-            rooms = pform.rooms.data
-            bathrooms=pform.bathrooms.data
-            price = pform.price.data
-            proptype = pform.price.data
-            location = pform.location.data
-            photo = pform.photo.data
+    form = PropertyForm()
+    if request.method == 'POST' and form.validate_on_submit():
+        title = form.title.data
+        description = form.description.data
+        rooms = form.rooms.data
+        bathrooms=form.bathrooms.data
+        price = form.price.data
+        proptype = form.price.data
+        location = form.location.data
+        photo = form.photo.data
+#        fileUpload = request.files['upload']
+        print(photo)
+        if photo:
+    #        filename = secure_filename(fileUpload.filename)
+    #        fileUpload.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    #        flash('File Saved', 'success')
             filename = secure_filename(photo.filename)
-            photo.save(os.path.join(
-                app.config['UPLOAD_FOLDER'], filename
-            ))
-            
-            property=Property(title=ptitle,description=description,rooms=rooms,bathrooms=bathrooms,price=price,proptype=proptype,location=location,photo="uploads/"+filename)
-            db.session.add(property)
+            prop=Property(title,description,rooms,bathrooms,price,proptype,location,filename)
+            db.session.add(prop)
             db.session.commit()
-            
+            photo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             flash('New Property has been added!','success')
-            return redirect(url_for('properties'))
+            return redirect('/properties')
         else:
-            flash_errors(pform)
+            flash("Incorrect file extensions")
+    else:
+        flash_errors(form)
             
-    return render_template('property.html', form =pform)
+    return render_template("property.html", form =form)
 
-@app.route('/properties', methods=['GET'])
+@app.route('/properties')
 def properties():
     """Render the website's properties page."""
-    properties=[]
-    properties = Property.query.all()
+    properties = db.session.query(Property).all()
     return render_template('properties.html', properties=properties)
 
-@app.route('/property/<propertyid>')
-def getproperties(propertyid):
+@app.route('/property/<int:propertyid>')
+def viewproperties(propertyid):
     """Render the website's properties page."""
-    property = Property.query.get(propertyid)
-    return render_template('getproperties.html', property=property)
-
+    if type(propertyid)==int:
+        pro = Property.query.get(propertyid)
+        return render_template("getproperties.html", property=pro)
+    else:
+        flash("Property not found")
+        return redirect("/properties")
+    # property = Property.query.get(propertyid)
+    # return render_template('getproperties.html', property=property)
+    
+@app.route('/uploads/<filename>')
+def get_image(filename):
+    return send_from_directory(os.path.join('..', app.config['UPLOAD_FOLDER']), filename)
 
 
 
