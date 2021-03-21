@@ -6,7 +6,7 @@ This file creates your application.
 """
 import os
 from app import app,db
-from flask import render_template, request, redirect, url_for,flash
+from flask import render_template, request, redirect, url_for,flash,send_from_directory
 from app.forms import PropertyForm
 from app.models import Property
 from werkzeug.utils import secure_filename
