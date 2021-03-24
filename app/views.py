@@ -5,12 +5,11 @@ Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
 This file creates your application.
 """
 import os
-from app import app,db
+from app import app, db
 from flask import render_template, request, redirect, url_for,flash,send_from_directory
-from app.forms import PropertyForm
 from app.models import Property
+from app.forms import PropertyForm
 from werkzeug.utils import secure_filename
-
 
 
 ###
@@ -22,68 +21,62 @@ def home():
     """Render website's home page."""
     return render_template('home.html')
 
+
 @app.route('/about/')
 def about():
     """Render the website's about page."""
     return render_template('about.html', name="Samantha James")
 
-
-@app.route('/property', methods = ['GET', 'POST'])
+@app.route("/property", methods=["GET", "POST"])
 def property():
-    """Render the website's property page."""
-    form = PropertyForm()
-    if request.method == 'POST' and form.validate_on_submit():
-        title = form.title.data
-        description = form.description.data
-        rooms = form.rooms.data
-        bathrooms=form.bathrooms.data
-        price = form.price.data
-        proptype = form.price.data
-        location = form.location.data
-        photo = form.photo.data
-#        fileUpload = request.files['upload']
-        print(photo)
-        if photo:
-    #        filename = secure_filename(fileUpload.filename)
-    #        fileUpload.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-    #        flash('File Saved', 'success')
+    form=PropertyForm()
+    if request.method == "POST" and form.validate_on_submit():
+            title = form.title.data
+            description = form.description.data
+            rooms = form.rooms.data
+            bathrooms=form.bathrooms.data
+            price = form.price.data
+            proptype = form.proptype.data
+            location = form.location.data
+            photo = form.photo.data
             filename = secure_filename(photo.filename)
-            prop=Property(title,description,rooms,bathrooms,price,proptype,location,filename)
-            db.session.add(prop)
+
+            photo.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
+            propertydisplay= Property(title,description,rooms,bathrooms,price,proptype,location,filename)
+
+            db.session.add(propertydisplay)
             db.session.commit()
-            photo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            flash('New Property has been added!','success')
-            return redirect('/properties')
-        else:
-            flash("Incorrect file extensions")
-    else:
-        flash_errors(form)
-            
-    return render_template("property.html", form =form)
 
-@app.route('/properties')
-def properties():
-    """Render the website's properties page."""
-    properties = db.session.query(Property).all()
-    return render_template('properties.html', properties=properties)
+            flash("Property successfully created", category="success")
+            return redirect(url_for('properties'))
+    return render_template("propertyform.html", form=form)
 
-@app.route('/property/<int:propertyid>')
-def viewproperties(propertyid):
-    """Render the website's properties page."""
-    if type(propertyid)==int:
-        pro = Property.query.get(propertyid)
-        return render_template("getproperties.html", property=pro)
-    else:
-        flash("Property not found")
-        return redirect("/properties")
-    # property = Property.query.get(propertyid)
-    # return render_template('getproperties.html', property=property)
-    
-@app.route('/uploads/<filename>')
+def get_uploaded_images():
+    rootdir=os.getcwd()
+    lst=[]
+    print (rootdir)
+    for subdir, dirs, files in os.walk(rootdir + '/uploads'):
+        for file in files:
+          lst.append(file)
+    lst.pop(0)
+    return lst
+
+@app.route('/upload/<filename>')
 def get_image(filename):
-    return send_from_directory(os.path.join('..', app.config['UPLOAD_FOLDER']), filename)
+    root_dir=os.getcwd()
+    return send_from_directory(os.path.join(root_dir,app.config['UPLOAD_FOLDER']),filename)
 
 
+@app.route("/properties")
+def properties():
+    propinfo= db.session.query(Property).all()
+    return render_template("properties.html", property= propinfo )
+   
+
+@app.route('/property/<propertyid>')
+def viewproperty(propertyid):
+    spec_prop= Property.query.filter_by(id=propertyid).first()
+    return render_template("viewproperty.html", spec_prop= spec_prop)
 
 ###
 # The functions below should be applicable to all Flask apps.
