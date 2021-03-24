@@ -6,7 +6,7 @@ class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'R@nd0mK*y'
     SQLALCHEMY_DATABASE_URI =  os.environ.get('APP_DATABASE_URL') 
     # or 'postgresql://adoseofsam:project1pwd@localhost/webproject1'
-    SQLALCHEMY_TRACK_MODIFICATIONS = False # This is just here to suppress a warning from SQLAlchemy as it will soon be removed
+    #SQLALCHEMY_TRACK_MODIFICATIONS = False # This is just here to suppress a warning from SQLAlchemy as it will soon be removed
     UPLOAD_FOLDER = './uploads'
     
 
